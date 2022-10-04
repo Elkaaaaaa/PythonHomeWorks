@@ -1,16 +1,11 @@
+
+import sys
+sys.path.insert(0, 'c:\\Users\\nikkl\\OneDrive\\Рабочий стол\\GeekBrains\\Python\\HW\\Func')
+import Func as f
+
 # Напишите программу, которая принимает на вход вещественное число и показывает сумму его цифр.
 
 def ex_1():
-    def InputNumbs(inputText):
-        mark = False
-        while not mark:
-            try:
-                numb = float(input(f"{inputText}"))
-                mark = True
-            except ValueError:
-                print("Это не число!")
-        return numb
-
     def sumNums(numb):
         sum_ = 0
         for i in str(numb):
@@ -18,24 +13,14 @@ def ex_1():
                 sum_ += int(i)
         return sum_
 
-    a = InputNumbs("Введите число: ")
+    a = f.InputNumbsFloat("Введите число: ")
     sum_ = sumNums(a)
     print(sum_)
 
 # Напишите программу, которая принимает на вход число N и выдает набор произведений чисел от 1 до N.
 
 def ex_2():
-    def InputNumbs(inputText):
-        mark = False
-        while not mark:
-            try:
-                numb = int(input(f"{inputText}"))
-                mark = True
-            except ValueError:
-                print("Это не число!")
-        return numb
-
-    N = InputNumbs("Введите чисто N: ")
+    N = f.InputNumbsInt("Введите чисто N: ")
     prod_ = 1
     prods = []
     for i in range(N):
@@ -47,17 +32,7 @@ def ex_2():
 # округлённую до трёх знаков после точки.
 
 def ex_3():
-    def InputNumbs(inputText):
-        mark = False
-        while not mark:
-            try:
-                numb = int(input(f"{inputText}"))
-                mark = True
-            except ValueError:
-                print("Это не число!")
-        return numb
-
-    n = InputNumbs("Введите число n: ")
+    n = f.InputNumbsInt("Введите число n: ")
     numbs = []
     sum_ = 0
     for i in range(n):

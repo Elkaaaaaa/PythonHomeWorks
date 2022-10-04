@@ -1,3 +1,8 @@
+
+import sys
+sys.path.insert(0, 'c:\\Users\\nikkl\\OneDrive\\Рабочий стол\\GeekBrains\\Python\\HW\\Func')
+import Func as f
+
 # Задайте список из нескольких чисел.
 # Напишите программу, которая найдёт сумму элементов списка, стоящих на нечётной позиции.
 
@@ -42,7 +47,6 @@ def ex_3():
 # Напишите программу, которая будет преобразовывать десятичное число в двоичное.
 
 def ex_4(): 
-    import Func as f
     number = f.InputNumbsInt("Введите десятичное число: ")
     i=0
     result = 0
@@ -67,5 +71,3 @@ def ex_5():
     result_fib. reverse()
     result_fib.extend(fib)
     print(f"Для k = {k} ряд чисел фибоначи с отрицательными индексами принимает вид: {result_fib}")
-
-ex_3()
