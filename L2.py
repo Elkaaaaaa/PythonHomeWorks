@@ -1,7 +1,5 @@
 
-import sys
-sys.path.insert(0, 'c:\\Users\\nikkl\\OneDrive\\Рабочий стол\\GeekBrains\\Python\\HW\\Func')
-import Func as f
+from HW.Func.Func import InputNumbsInt, InputNumbsFloat
 
 # Напишите программу, которая принимает на вход вещественное число и показывает сумму его цифр.
 
@@ -13,14 +11,14 @@ def ex_1():
                 sum_ += int(i)
         return sum_
 
-    a = f.InputNumbsFloat("Введите число: ")
+    a = InputNumbsFloat("Введите число: ")
     sum_ = sumNums(a)
     print(sum_)
 
 # Напишите программу, которая принимает на вход число N и выдает набор произведений чисел от 1 до N.
 
 def ex_2():
-    N = f.InputNumbsInt("Введите чисто N: ")
+    N = InputNumbsInt("Введите чисто N: ")
     prod_ = 1
     prods = []
     for i in range(N):
@@ -32,7 +30,7 @@ def ex_2():
 # округлённую до трёх знаков после точки.
 
 def ex_3():
-    n = f.InputNumbsInt("Введите число n: ")
+    n = InputNumbsInt("Введите число n: ")
     numbs = []
     sum_ = 0
     for i in range(n):
@@ -48,7 +46,7 @@ def ex_3():
 def ex_4():
     import random
     numbs = []
-    N = int(input("Введите N: "))
+    N = InputNumbsInt("Введите N: ")
     for i in range(N):
         numbs.append(random.randint(-N, N))
     print(numbs)

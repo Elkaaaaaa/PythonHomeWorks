@@ -1,9 +1,8 @@
 """
-    import sys
-    sys.path.insert(0, 'c:\\Users\\nikkl\\OneDrive\\Рабочий стол\\GeekBrains\\Python\\HW\\Func')
-    import Func as f
+import sys
+sys.path.insert(0, 'c:\\Users\\nikkl\\OneDrive\\Рабочий стол\\GeekBrains\\Python\\HW\\Func')
+import Func as f
 """
-
 
 
 def InputNumbsInt(inputText): #Функция ввода данных типа int
@@ -27,3 +26,14 @@ def InputNumbsFloat(inputText): #Функция ввода данных типа
             print("Это не число типа float!")
     return numb
 
+
+def splitting_into_multipliers(number): #Функция разделения числа на простые множители
+    numbs = []
+    k = 2
+    while number != 1:
+        if number%k == 0:
+            numbs.append(k)
+            number //= k
+        else:
+            k+=1
+    return numbs
