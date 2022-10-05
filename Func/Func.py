@@ -5,18 +5,18 @@ import Func as f
 """
 
 
-def InputNumbsInt(inputText): #Функция ввода данных типа int
+def InputNumbsInt(inputText):  # Функция ввода данных типа int
     mark = False
     while not mark:
         try:
-            numb = int(input(f"{inputText}"))
+            number = int(input(f"{inputText}"))
             mark = True
         except ValueError:
             print("Это не число типа int!")
-    return numb
+    return number
 
 
-def InputNumbsFloat(inputText): #Функция ввода данных типа float
+def InputNumbsFloat(inputText):  # Функция ввода данных типа float
     mark = False
     while not mark:
         try:
@@ -27,13 +27,13 @@ def InputNumbsFloat(inputText): #Функция ввода данных типа
     return numb
 
 
-def splitting_into_multipliers(number): #Функция разделения числа на простые множители
+def splitting_into_multipliers(number):  # Функция разделения числа на простые множители
     numbs = []
     k = 2
     while number != 1:
-        if number%k == 0:
+        if number % k == 0:
             numbs.append(k)
             number //= k
         else:
-            k+=1
+            k += 1
     return numbs
