@@ -1,24 +1,22 @@
 import random
 
-from HW.Func.Func import InputNumbsInt, splitting_into_multipliers
+from HW.Func.Func import InputNumbsInt, splitting_into_multipliers, InputNumbsFloat
 
 
 # Вычислить число π c заданной точностью d
 
-
-# n = InputNumbsFloat('Введите степень точности: ')
-# pi_1 = 4
-# pi_2 = 0
-# i = 1
-# diff = 1
-# while diff > 1 / (10 ** (n + 1)):
-#     pi_1 += 4 * (1 / (2 * i + 1) * (-1) ** i)
-#     # print(pi_1)
-#     diff = abs(pi_1 - pi_2)
-#     print(diff)
-#     pi_2 += 4 * (1 / (2 * (i - 1) + 1) * (-1) ** (i - 1))
-#     i += 1
-# print(f"Вывод: {pi_2}")
+def ex_1():
+    d = InputNumbsFloat('Введите степень точности: ')
+    n = 1
+    s = 0
+    unit = 1
+    while True:
+        s = s + unit * 4 / n
+        if 4 / n < d:
+            break
+        unit = -unit
+        n = n + 2
+    print(f"Вывод: {s}")
 
 
 # Задайте натуральное число N. Напишите программу, которая составит список простых множителей числа N.
@@ -66,7 +64,6 @@ def ex_4():
 # Даны два файла, в каждом из которых находится запись многочлена.
 # Задача - сформировать файл, содержащий сумму многочленов.
 # Коэффициенты могут быть как положительными, так и отрицательными. Степени многочленов могут отличаться.
-
 
 def ex_5():
     def create_poly(file_name: str):
