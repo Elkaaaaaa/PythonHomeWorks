@@ -176,5 +176,57 @@ def ex_3():
         else:
             field, count = poo(field, count)
 
+
 # Реализуйте RLE алгоритм: реализуйте модуль сжатия и восстановления данных.
 
+def ex_4():
+    def convert(text):
+        result_list = []
+        k = 0
+        n = 0
+        count = 0
+        for i in range(0, len(text) - 1):
+            if i < n:
+                continue
+            else:
+                try:
+                    n = i
+                    count = 1
+                    while text[i] == text[n + 1]:
+                        count += 1
+                        n += 1
+                        if count >= 9:
+                            result_list.append((count, text[i]))
+                            count = 0
+                    else:
+                        result_list.append((count, text[i]))
+                        n += 1
+                except IndexError:
+                    result_list.append((count, text[i]))
+                    continue
+        result_string = ""
+        for i in range(len(result_list)):
+            for j in range(0, 2):
+                result_string += str(result_list[i][j])
+        return result_string
+
+    def bring_back(result_string):
+        back_list = []
+        back_string = ""
+        for i in range(len(result_string)):
+            back_list.append(result_string[i])
+        for i in range(0, len(back_list), 2):
+            n = int(back_list[i])
+            while n != 0:
+                back_string += back_list[i + 1]
+                n -= 1
+        return back_string
+
+    text = "aaaaaaaaaaaaaaaaaaaaaabbb222aaabbwwwwcc"
+    print(text)
+    convert_result = convert(text)
+    print(convert_result)
+    back_result = bring_back(convert_result)
+    print(back_result)
+
+#
