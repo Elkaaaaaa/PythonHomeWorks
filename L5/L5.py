@@ -229,18 +229,22 @@ def ex_5():
     print(string)
     temp = []
     count = 0
+    checkout = []
     for i in range(len(string)):
-        for el in range(i + 1, len(string)):
-            temp.clear()
-            temp.append(string[i])
-            n = i
-            if string[i] >= string[el]:
-                continue
-            for c in range(el, len(string)):
-                if string[c] > string[n]:
-                    temp.append(string[c])
-                    n = c
-                    print(temp)
-                    count += 1
-
+        if string[i] not in checkout:
+            checkout.append(string[i])
+            for el in range(i + 1, len(string)):
+                temp.clear()
+                temp.append(string[i])
+                n = i
+                if string[i] >= string[el]:
+                    continue
+                for c in range(el, len(string)):
+                    if string[c] > string[n]:
+                        temp.append(string[c])
+                        n = c
+                        print(temp)
+                        count += 1
+        else:
+            continue
     print(count)
