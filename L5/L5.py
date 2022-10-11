@@ -218,4 +218,29 @@ def ex_4():
     back_result = bring_back(convert_result)
     print(back_result)
 
-#
+
+# Дан список чисел. Создайте список, в который попадают числа,
+# описываемые возрастающую последовательность.
+# Порядок элементов менять нельзя.
+# [1, 5, 2, 3, 4, 6, 1, 7] => [1, 2, 3] или [1, 7] или [1, 6, 7] и т.д.
+
+def ex_5():
+    string = list(map(int, [1, 5, 2, 3, 4, 6, 1, 7]))
+    print(string)
+    temp = []
+    count = 0
+    for i in range(len(string)):
+        for el in range(i + 1, len(string)):
+            temp.clear()
+            temp.append(string[i])
+            n = i
+            if string[i] >= string[el]:
+                continue
+            for c in range(el, len(string)):
+                if string[c] > string[n]:
+                    temp.append(string[c])
+                    n = c
+                    print(temp)
+                    count += 1
+
+    print(count)
