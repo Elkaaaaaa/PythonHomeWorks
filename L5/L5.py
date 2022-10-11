@@ -109,12 +109,18 @@ def ex_2():
 #     24 26 28
 
 def ex_3():
-    def pox(field_in_game, count_in_game):
+    def game(field_in_game, count_in_game, turn_in_game):
+        if turn_in_game:
+            name = "крестики"
+            type = 'x'
+        else:
+            name = "нолики"
+            type = 'o'
         while True:
-            k = InputNumbsInt('Ходят крестики\nВведите номер поля: ')
+            k = InputNumbsInt(f'Ходят {name}\nВведите номер поля: ')
             k = str(k)
             if k in field_in_game:
-                field_in_game = field_in_game.replace(k, "x")
+                field_in_game = field_in_game.replace(k, type)
                 print(field_in_game)
                 count_in_game += 1
                 break
@@ -125,56 +131,39 @@ def ex_3():
                 if count_in_game % 2 != 0:
                     print("Победили крестики")
                     count_in_game = 9
-        for i in range(0, 5, 2):
-            if field_in_game[i] == field_in_game[i + 12] and field_in_game[i + 12] == field_in_game[i + 24]:
-                if count_in_game % 2 != 0:
-                    print("Победили крестики")
-                    count_in_game = 9
-        for i in range(0, 5, 4):
-            if (field_in_game[i] == field_in_game[i + 14] and field_in_game[i + 14] == field_in_game[i + 28]) or \
-                    (field_in_game[i] == field_in_game[i + 10] and field_in_game[i + 10] == field_in_game[i + 20]):
-                if count_in_game % 2 != 0:
-                    print("Победили крестики")
-                    count_in_game = 9
-        return field_in_game, count_in_game
-
-    def poo(field_in_game, count_in_game):
-        while True:
-            k = InputNumbsInt('Ходят нолики\nВведите номер поля: ')
-            k = str(k)
-            if k in field_in_game:
-                field_in_game = field_in_game.replace(k, "o")
-                print(field_in_game)
-                count_in_game += 1
-                break
-            else:
-                print("Поле занято")
-        for i in range(0, len(field_in_game), 12):
             if field_in_game[i] == field_in_game[i + 2] and field_in_game[i + 2] == field_in_game[i + 4]:
                 if count_in_game % 2 == 0:
                     print("Победили нолики")
                     count_in_game = 9
         for i in range(0, 5, 2):
             if field_in_game[i] == field_in_game[i + 12] and field_in_game[i + 12] == field_in_game[i + 24]:
+                if count_in_game % 2 != 0:
+                    print("Победили крестики")
+                    count_in_game = 9
+            if field_in_game[i] == field_in_game[i + 12] and field_in_game[i + 12] == field_in_game[i + 24]:
                 if count_in_game % 2 == 0:
                     print("Победили нолики")
                     count_in_game = 9
         for i in range(0, 5, 4):
             if (field_in_game[i] == field_in_game[i + 14] and field_in_game[i + 14] == field_in_game[i + 28]) or \
                     (field_in_game[i] == field_in_game[i + 10] and field_in_game[i + 10] == field_in_game[i + 20]):
+                if count_in_game % 2 != 0:
+                    print("Победили крестики")
+                    count_in_game = 9
+            if (field_in_game[i] == field_in_game[i + 14] and field_in_game[i + 14] == field_in_game[i + 28]) or \
+                    (field_in_game[i] == field_in_game[i + 10] and field_in_game[i + 10] == field_in_game[i + 20]):
                 if count_in_game % 2 == 0:
                     print("Победили нолики")
                     count_in_game = 9
-        return field_in_game, count_in_game
+        turn_in_game = not turn_in_game
+        return field_in_game, count_in_game, turn_in_game
 
     field = "1|2|3\n-----\n4|5|6\n-----\n7|8|9"
     print(field)
     count = 0
+    turn = True
     while count != 9:
-        if count % 2 == 0:
-            field, count = pox(field, count)
-        else:
-            field, count = poo(field, count)
+        field, count, turn = game(field, count, turn)
 
 
 # Реализуйте RLE алгоритм: реализуйте модуль сжатия и восстановления данных.
