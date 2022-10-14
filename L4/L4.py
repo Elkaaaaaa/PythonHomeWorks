@@ -80,18 +80,16 @@ def ex_5():
 
     # Работа с первым многочленом в первом файле
     string_1 = create_poly('L4_5_1.txt')
-    mem_1 = string_1[:len(string_1) - 3].split(" + ")
+    mem_1 = [e.split('*x^') for e in string_1[:len(string_1) - 3].split(" + ")]
     polynoms_1 = {}
     for i in range(len(mem_1) - 1, -1, -1):
-        mem_1[i] = mem_1[i].split('*x^')
         polynoms_1.setdefault(int(mem_1[i][1]), int(mem_1[i][0]))
 
     # Работа со вторым многочленом во втором файле
     string_2 = create_poly('L4_5_2.txt')
-    mem_2 = string_2[:len(string_2) - 3].split(" + ")
+    mem_2 = [e.split('*x^') for e in string_2[:len(string_2) - 3].split(" + ")]
     polynoms_2 = {}
     for i in range(len(mem_2) - 1, -1, -1):
-        mem_2[i] = mem_2[i].split('*x^')
         polynoms_2.setdefault(int(mem_2[i][1]), int(mem_2[i][0]))
 
     # Работа с суммарным многочленом

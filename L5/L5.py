@@ -11,8 +11,7 @@ def ex_1():
         string = data_file.readlines()
     result = []
     for i in range(len(string)):
-        string[i] = string[i].split()
-        result.append(list(filter(lambda e: 'мне' not in e, string[i])))
+        result.append(list(filter(lambda e: 'мне' not in e, string[i].split())))
     with open("Lesson5_1_2", "w", encoding="UTF-8") as data_file:
         for i in range(len(result)):
             data_file.writelines(" ".join(result[i]) + "\n")
@@ -171,7 +170,6 @@ def ex_3():
 def ex_4():
     def convert(text):
         result_list = []
-        k = 0
         n = 0
         count = 0
         for i in range(0, len(text) - 1):
@@ -200,10 +198,8 @@ def ex_4():
         return result_string
 
     def bring_back(result_string):
-        back_list = []
         back_string = ""
-        for i in range(len(result_string)):
-            back_list.append(result_string[i])
+        back_list = [el for el in result_string]
         for i in range(0, len(back_list), 2):
             n = int(back_list[i])
             while n != 0:
