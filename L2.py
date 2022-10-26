@@ -1,4 +1,4 @@
-from HW.Func.Func import InputNumbsInt, InputNumbsFloat
+from HW.Func.Func import input_numbs_int, input_numbs_float
 import random
 
 
@@ -12,7 +12,7 @@ def ex_1():
                 sum_ += int(i)
         return sum_
 
-    a = InputNumbsFloat("Введите число: ")
+    a = input_numbs_float("Введите число: ")
     sum_ = sum_nums(a)
     print(sum_)
 
@@ -20,7 +20,7 @@ def ex_1():
 # Напишите программу, которая принимает на вход число N и выдает набор произведений чисел от 1 до N.
 
 def ex_2():
-    N = InputNumbsInt("Введите чисто N: ")
+    N = input_numbs_int("Введите чисто N: ")
     prod_ = 1
     prods = []
     for i in range(N):
@@ -33,7 +33,7 @@ def ex_2():
 # округлённую до трёх знаков после точки.
 
 def ex_3():
-    n = InputNumbsInt("Введите число n: ")
+    n = input_numbs_int("Введите число n: ")
     numbs = [(1 + 1 / (i + 1)) ** (i + 1) for i in range(n)]
     sum_ = 0
     for i in range(n):
@@ -47,7 +47,7 @@ def ex_3():
 
 def ex_4():
     import random
-    N = InputNumbsInt("Введите N: ")
+    N = input_numbs_int("Введите N: ")
     numbs = [random.randint(-N, N) for i in range(N)]
     print(numbs)
     a = int(input("Введите номер первого элемента: "))

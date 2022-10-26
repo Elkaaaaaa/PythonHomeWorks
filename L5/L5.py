@@ -1,6 +1,6 @@
 import random
 
-from HW.Func.Func import InputNumbsInt
+from HW.Func.Func import input_numbs_int
 
 
 # Напишите программу, удаляющую из текста все слова, содержащие ""абв"".
@@ -22,7 +22,7 @@ def ex_2():
     def part_of_human(name, candy_in_game):
         while True:
             print(f"\nВ мешке осталось {candy_in_game} конфет!")
-            n = InputNumbsInt(f"Ход Игрока {name}\nВведите количество конфет: ")
+            n = input_numbs_int(f"Ход Игрока {name}\nВведите количество конфет: ")
             if n <= 28:
                 if candy_in_game >= n:
                     candy_in_game -= n
@@ -59,7 +59,7 @@ def ex_2():
                     a += 29
 
     candy = 2021
-    mode_check = InputNumbsInt('Выберете тип игры:\n0 - Игрок против Феди\n1 - Игрок против игрока\n-----> ')
+    mode_check = input_numbs_int('Выберете тип игры:\n0 - Игрок против Феди\n1 - Игрок против игрока\n-----> ')
     name_1 = input("Введите Ваше имя: ")
     lot = random.randint(0, 1)
     if lot == 1:
@@ -116,7 +116,7 @@ def ex_3():
             name = "нолики"
             type = 'o'
         while True:
-            k = InputNumbsInt(f'Ходят {name}\nВведите номер поля: ')
+            k = input_numbs_int(f'Ходят {name}\nВведите номер поля: ')
             k = str(k)
             if k in field_in_game:
                 field_in_game = field_in_game.replace(k, type)

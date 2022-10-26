@@ -1,12 +1,12 @@
 import random
 
-from HW.Func.Func import InputNumbsInt, splitting_into_multipliers, InputNumbsFloat
+from HW.Func.Func import input_numbs_int, splitting_into_multipliers, input_numbs_float
 
 
 # Вычислить число π c заданной точностью d
 
 def ex_1():
-    d = InputNumbsFloat('Введите степень точности: ')
+    d = input_numbs_float('Введите степень точности: ')
     n = 1
     s = 0
     unit = 1
@@ -22,7 +22,7 @@ def ex_1():
 # Задайте натуральное число N. Напишите программу, которая составит список простых множителей числа N.
 
 def ex_2():
-    a = InputNumbsInt("Введите число: ")
+    a = input_numbs_int("Введите число: ")
     numbs_a = splitting_into_multipliers(a)
     print(numbs_a)
 
@@ -50,7 +50,7 @@ def ex_3():
 # (значения от 0 до 100) многочлена и записать в файл многочлен степени k.
 
 def ex_4():
-    k = InputNumbsInt('Введите степень многочлена: ')
+    k = input_numbs_int('Введите степень многочлена: ')
     numbs = []
     for i in range(k, 0, -1):
         numbs.append(f"{random.randint(0, 100)}*x^{i}")

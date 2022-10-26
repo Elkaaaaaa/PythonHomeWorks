@@ -1,4 +1,4 @@
-from HW.Func.Func import InputNumbsInt
+from HW.Func.Func import input_numbs_int
 
 
 # Задайте список из нескольких чисел.
@@ -45,7 +45,7 @@ def ex_3():
 # Напишите программу, которая будет преобразовывать десятичное число в двоичное.
 
 def ex_4():
-    number = InputNumbsInt("Введите десятичное число: ")
+    number = input_numbs_int("Введите десятичное число: ")
     i = 0
     result = 0
     print(number, "--->")
@@ -60,7 +60,7 @@ def ex_4():
 # Составьте список чисел Фибоначчи, в том числе для отрицательных индексов.
 
 def ex_5():
-    k = InputNumbsInt("Введите k: ")
+    k = input_numbs_int("Введите k: ")
     fib = [0, 1]
     for i in range(2, k + 1):
         fib.append(fib[i - 1] + fib[i - 2])

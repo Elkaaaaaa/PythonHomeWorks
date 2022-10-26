@@ -1,6 +1,6 @@
 import random
 
-from HW.Func.Func import InputNumbsInt
+from HW.Func.Func import input_numbs_int
 
 
 def ex_1():
@@ -33,7 +33,7 @@ def ex_1():
 def ex_2():
     # Задача 5. Семинар 3.
     # Было
-    k = InputNumbsInt("Введите k: ")
+    k = input_numbs_int("Введите k: ")
     fib = [0, 1]
     result_fib = []
     for i in range(2, k + 1):
@@ -43,7 +43,7 @@ def ex_2():
     result_fib.reverse()
     result_fib.extend(fib)
     # Стало
-    k = InputNumbsInt("Введите k: ")
+    k = input_numbs_int("Введите k: ")
     fib = [0, 1]
     for i in range(2, k + 1):
         fib.append(fib[i - 1] + fib[i - 2])
@@ -55,7 +55,7 @@ def ex_2():
 def ex_3():
     # Задача 3. Семинар 2.
     # Было
-    n = InputNumbsInt("Введите число n: ")
+    n = input_numbs_int("Введите число n: ")
     numbs = []
     sum_ = 0
     for i in range(n):
@@ -64,7 +64,7 @@ def ex_3():
         sum_ += round(numbs[i], 3)
     print(sum_)
     # Стало
-    n = InputNumbsInt("Введите число n: ")
+    n = input_numbs_int("Введите число n: ")
     numbs = [(1 + 1 / (i + 1)) ** (i + 1) for i in range(n)]
     sum_ = 0
     for i in range(n):
@@ -75,7 +75,7 @@ def ex_3():
 def ex_4():
     # Задача 4. Семинар 2.
     # Было
-    n = InputNumbsInt("Введите n: ")
+    n = input_numbs_int("Введите n: ")
     numbs = []
     for i in range(n):
         numbs.append(random.randint(-n, n))
@@ -85,7 +85,7 @@ def ex_4():
     result = numbs[a] * numbs[b]
     print(result)
     # Стало
-    n = InputNumbsInt("Введите n: ")
+    n = input_numbs_int("Введите n: ")
     numbs = [random.randint(-n, n) for i in range(n)]
     print(numbs)
     a = int(input("Введите номер первого элемента: "))
