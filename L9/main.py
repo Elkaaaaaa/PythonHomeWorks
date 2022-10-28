@@ -1,6 +1,8 @@
 from telebot import *
 
-bot = TeleBot('5719856375:AAFMFfs6hokw1QOdQQzzQ-w85CF50Dc2eP0')
+with open("Bot Token.txt", "r", encoding="utf-8") as file:
+    token = file.read()
+bot = TeleBot(f'{token}')
 
 main_menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
 key1 = types.KeyboardButton('Крестики-Нолики')
@@ -49,8 +51,7 @@ def xo(msg: types.Message):
                         if is_win(field, "X"):
                             for v in range(len(field)):
                                 field[v] = f"{v + 1}"
-                                field_button[v] = "*"
-                            # del game_menu_call_back
+                                field_button[v] = types.InlineKeyboardButton(text="*", callback_data=f"{v + 1}")
                             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
                                                   text=f'ВЫ ВЫИГРАЛИ')
                             return
@@ -61,32 +62,22 @@ def xo(msg: types.Message):
                                     field_button[c - 1] = types.InlineKeyboardButton(text="O",
                                                                                      callback_data=f"{c}")
                                     field[c - 1] = 'O'
-                                    print(c)
                                     break
                             if is_win(field, 'O'):
                                 for v in range(len(field)):
                                     field[v] = f"{v + 1}"
-                                    field_button[v] = "*"
+                                    field_button[v] = types.InlineKeyboardButton(text="*", callback_data=f"{v + 1}")
                                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
                                                       text=f'Бот ВЫИГРАЛ\n{field}\n{field_button}')
                                 return
                             new_field(field_button, k, call)
-                        # game_menu_call_back = types.InlineKeyboardMarkup(row_width=3)
-                        # field_button[k] = types.InlineKeyboardButton(text="X", callback_data=f"{k + 10}")
-                        # for j in range(0, 9, 3):
-                        #     game_menu_call_back.add(field_button[j], field_button[j + 1], field_button[j + 2])
-                        # new_game_call_back = types.InlineKeyboardButton(text="Выход", callback_data="exit")
-                        # game_menu_call_back.add(new_game_call_back)
-                        # bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                        #                       text='Игровое поле',
-                        #                       reply_markup=game_menu_call_back)
 
 
-def new_field(field, k, call):
+def new_field(field_button, k, call):
     game_menu_call_back = types.InlineKeyboardMarkup(row_width=3)
-    field[k] = types.InlineKeyboardButton(text="X", callback_data=f"{k}")
+    field_button[k] = types.InlineKeyboardButton(text="X", callback_data=f"{k}")
     for j in range(0, 9, 3):
-        game_menu_call_back.add(field[j], field[j + 1], field[j + 2])
+        game_menu_call_back.add(field_button[j], field_button[j + 1], field_button[j + 2])
     new_game_call_back = types.InlineKeyboardButton(text="Выход", callback_data="exit")
     game_menu_call_back.add(new_game_call_back)
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
