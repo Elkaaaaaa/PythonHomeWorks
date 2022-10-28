@@ -17,10 +17,6 @@ global count
 global game_menu
 
 
-def revers(c):
-    return not c
-
-
 @bot.message_handler(commands=['start'])
 def inline_key(msg):
     bot.send_message(msg.chat.id, 'Добро пожаловть!\nВыберете действие из меню', reply_markup=main_menu)
