@@ -58,11 +58,11 @@ def calc(operation):
                     num = "-"
                     for i in range(len(numb)):
                         num += str(numb[i])
-                    lst[c] = int(num)
-                    if int(int(lst[0]) - int(lst[1])) < 0:
-                        return f"neg_{abs(int(lst[0] - lst[1]))}"
-                    else:
-                        return int(lst[0] - lst[1])
+                    lst[c] = float(num)
+            if float(float(lst[0]) - float(lst[1])) < 0:
+                return f"neg_{abs(float(lst[0] - lst[1]))}"
+            else:
+                return float(lst[0] - lst[1])
 
     def multi(lst):
         for c in range(0, 2):
@@ -71,8 +71,8 @@ def calc(operation):
                 num = "-"
                 for i in range(len(numb)):
                     num += str(numb[i])
-                lst[c] = int(num)
-        return lst[0] * lst[1]
+                lst[c] = float(num)
+        return float(lst[0]) * float(lst[1])
 
     def divide(lst):
         for c in range(0, 2):
@@ -81,8 +81,8 @@ def calc(operation):
                 num = "-"
                 for i in range(len(numb)):
                     num += str(numb[i])
-                lst[c] = int(num)
-        return lst[0] / lst[1]
+                lst[c] = float(num)
+        return float(lst[0]) / float(lst[1])
 
     def count_from_string(operation_in_calculation):
         if "(" in operation_in_calculation:
@@ -91,9 +91,15 @@ def calc(operation):
             return count_from_string(
                 operation_in_calculation[:bk1] + str(
                     count_from_string(operation_in_calculation[bk1 + 1:bk2])) + operation_in_calculation[bk2 + 1:])
-        if operation_in_calculation.isdigit():
-            return int(operation_in_calculation)
+        try:
+            if isinstance(float(operation_in_calculation), float):
+                return operation_in_calculation
+        except ValueError:
+            pass
         if "-" in operation_in_calculation:
+            temp1 = operation_in_calculation.split("-", 1)
+            temp = temp1[1].replace('-', '%temp%').replace('+', '-').replace('%temp%', '+')
+            operation_in_calculation = temp1[0] + "-" + temp
             return minus([count_from_string(item) for item in operation_in_calculation.split("-", 1)])
         if "+" in operation_in_calculation:
             return sum([count_from_string(item) for item in operation_in_calculation.split("+", 1)])
@@ -170,19 +176,19 @@ def xo(msg: types.Message):
         but_del_all = types.InlineKeyboardButton(text="C", callback_data="butC")
         but_close = types.InlineKeyboardButton(text="Close", callback_data="butClose")
         but_result = types.InlineKeyboardButton(text="=", callback_data="but=")
+        but_dot = types.InlineKeyboardButton(text=".", callback_data="but.")
         calc_keyboard.add(but_plus, but_minus, but_del)
         calc_keyboard.add(but_multy, but_divide, but_del_all)
-        calc_keyboard.add(but_l_s, but_0, but_r_s)
+        calc_keyboard.add(but_l_s, but_r_s)
         calc_keyboard.add(but_7, but_8, but_9)
         calc_keyboard.add(but_4, but_5, but_6)
         calc_keyboard.add(but_1, but_2, but_3)
-        calc_keyboard.add(but_result)
+        calc_keyboard.add(but_dot, but_0, but_result)
         calc_keyboard.add(but_close)
         bot.send_message(chat_id=msg.chat.id,
                          text="Вас приветствует справка по кальлкулятору\n"
-                              "\nДля запуска модуля вычислений введите\n"
-                              " 'calc' \n"
-                              "перед выражением или воспользуйтесь встроенной клавиатурой", reply_markup=calc_keyboard)
+                              "\nДля запуска модуля вычислений введите 'calc' перед выражением\n"
+                              "Или воспользуйтесь встроенной клавиатурой^^", reply_markup=calc_keyboard)
         keyboard_operation = ""
     if 'calc' in msg.text.lower():
         msg.text = msg.text.lower().replace(" ", "")
@@ -193,7 +199,13 @@ def xo(msg: types.Message):
             text += str(result[i])
         if "i" not in text:
             try:
-                res_of_calc = calc(text)
+                res_of_calc = str(calc(text))
+                if "neg" in res_of_calc:
+                    numb = list(filter(lambda e: "neg" not in e, res_of_calc.split("_")))
+                    num = "-"
+                    for i in range(len(numb)):
+                        num += str(numb[i])
+                    res_of_calc = int(num)
                 bot.send_message(chat_id=msg.chat.id, text=f"Результат вычисления: {res_of_calc}")
             except ValueError:
                 bot.send_message(chat_id=msg.chat.id, text=f"Выражение некорректо, я не могу его посчитать\n"
@@ -326,8 +338,24 @@ def xo(msg: types.Message):
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
                                       text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
             if call.data == "but=":
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f"Ваш результат:{calc(keyboard_operation)}")
+                result_from_keyboard = str(calc(keyboard_operation))
+                if "neg" in result_from_keyboard:
+                    numb_calc = list(filter(lambda e: "neg" not in e, result_from_keyboard.split("_")))
+                    num_calc = "-"
+                    for p in range(len(numb_calc)):
+                        num_calc += str(numb_calc[p])
+                    try:
+                        result_from_keyboard = float(num_calc)
+                        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                              text=f"Ваш результат:{result_from_keyboard}")
+                    except ValueError:
+                        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                              text=f"Что-то пошло не так. "
+                                                   f"Перепроверьте выражение\n{keyboard_operation}",
+                                              reply_markup=calc_keyboard)
+                else:
+                    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                          text=f"Ваш результат:{result_from_keyboard}")
             if call.data == "but*":
                 keyboard_operation += "*"
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
@@ -352,10 +380,14 @@ def xo(msg: types.Message):
                 keyboard_operation = ""
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
                                       text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "butClose":
-                keyboard_operation = ""
+            if call.data == "but.":
+                keyboard_operation += "."
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text="Надеюсь, что помог:D")
+                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+            if call.data == "butClose":
+                keyboard_operation += "."
+                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                      text="Заходи, если что)")
 
 
 bot.infinity_polling()

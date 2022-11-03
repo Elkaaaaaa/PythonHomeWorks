@@ -37,8 +37,18 @@ def calc(operation):
     def minus(lst):
         if lst[0] is None:
             return f"neg_{lst[1]}"
-        elif int(lst[0] - lst[1]) < 0:
-            return f"neg_{abs(int(lst[0] - lst[1]))}"
+        else:
+            for c in range(0, 2):
+                if "neg" in str(lst[c]):
+                    numb = list(filter(lambda e: "neg" not in e, lst[c].split("_")))
+                    num = "-"
+                    for i in range(len(numb)):
+                        num += str(numb[i])
+                    lst[c] = int(num)
+            if int(int(lst[0]) - int(lst[1])) < 0:
+                return f"neg_{abs(int(lst[0] - lst[1]))}"
+            else:
+                return int(lst[0] - lst[1])
 
     def multi(lst):
         for c in range(0, 2):
@@ -83,7 +93,7 @@ def calc(operation):
 
 
 # "(5-2)*((10-3)*(10-7))"
-print(calc("2*(45-47)"))
+print(str(calc("2*(45-47-1)")))
 # lst = ["2", "neg_6"]
 # for c in range(0, 2):
 #     if "neg" in lst[c]:
