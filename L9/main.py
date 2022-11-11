@@ -15,36 +15,10 @@ main_menu.add(key1)
 main_menu.add(key3)
 global count
 global game_menu
-global keyboard_operation
-global calc_keyboard
 global field
 global field_button
-
-
-def new_field(field_button_new_field, k, call):
-    game_menu_call_back = types.InlineKeyboardMarkup(row_width=3)
-    field_button_new_field[k] = types.InlineKeyboardButton(text="❌", callback_data=f"{k + 10}")
-    for j in range(0, 9, 3):
-        game_menu_call_back.add(field_button_new_field[j], field_button_new_field[j + 1],
-                                field_button_new_field[j + 2])
-    new_game_call_back = types.InlineKeyboardButton(text="Выход", callback_data="exit")
-    game_menu_call_back.add(new_game_call_back)
-    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                          text='Игровое поле',
-                          reply_markup=game_menu_call_back)
-
-
-def is_win(arr, who):
-    if (((arr[0] == who) and (arr[4] == who) and (arr[8] == who)) or
-            ((arr[2] == who) and (arr[4] == who) and (arr[6] == who)) or
-            ((arr[0] == who) and (arr[1] == who) and (arr[2] == who)) or
-            ((arr[3] == who) and (arr[4] == who) and (arr[5] == who)) or
-            ((arr[6] == who) and (arr[7] == who) and (arr[8] == who)) or
-            ((arr[0] == who) and (arr[3] == who) and (arr[6] == who)) or
-            ((arr[1] == who) and (arr[4] == who) and (arr[7] == who)) or
-            ((arr[2] == who) and (arr[5] == who) and (arr[8] == who))):
-        return True
-    return False
+global keyboard_operation
+global calc_keyboard
 
 
 def calc(operation):
@@ -54,20 +28,20 @@ def calc(operation):
         else:
             for c in range(0, 2):
                 if "neg" in str(lst[c]):
-                    numb = list(filter(lambda e: "neg" not in e, lst[c].split("_")))
+                    numb = list(filter(lambda el: "neg" not in el, lst[c].split("_")))
                     num = "-"
                     for i in range(len(numb)):
                         num += str(numb[i])
                     lst[c] = float(num)
             if float(float(lst[0]) - float(lst[1])) < 0:
-                return f"neg_{abs(float(lst[0] - lst[1]))}"
+                return f"neg_{abs(float(lst[0]) - float(lst[1]))}"
             else:
-                return float(lst[0] - lst[1])
+                return float(lst[0]) - float(lst[1])
 
     def multi(lst):
         for c in range(0, 2):
             if "neg" in str(lst[c]):
-                numb = list(filter(lambda e: "neg" not in e, lst[c].split("_")))
+                numb = list(filter(lambda el: "neg" not in el, lst[c].split("_")))
                 num = "-"
                 for i in range(len(numb)):
                     num += str(numb[i])
@@ -77,7 +51,7 @@ def calc(operation):
     def divide(lst):
         for c in range(0, 2):
             if "neg" in str(lst[c]):
-                numb = list(filter(lambda e: "neg" not in e, lst[c].split("_")))
+                numb = list(filter(lambda el: "neg" not in el, lst[c].split("_")))
                 num = "-"
                 for i in range(len(numb)):
                     num += str(numb[i])
@@ -110,39 +84,41 @@ def calc(operation):
         if "neg" in operation_in_calculation:
             return operation_in_calculation
 
-    return count_from_string(operation)
+    result = count_from_string(operation)
+    if "neg" in result:
+        numb_calc = list(filter(lambda el: "neg" not in el, result.split("_")))
+        num_calc = "-"
+        for p in range(len(numb_calc)):
+            num_calc += str(numb_calc[p])
+        return float(num_calc)
+    else:
+        return float(result)
 
 
-def calc_i(operation):
-    def minus(lst):
-        return lst[0] - lst[1]
+def new_field(field_button_new_field, k, call):
+    game_menu_call_back = types.InlineKeyboardMarkup(row_width=3)
+    field_button_new_field[k] = types.InlineKeyboardButton(text="❌", callback_data=f"{k + 10}")
+    for j in range(0, 9, 3):
+        game_menu_call_back.add(field_button_new_field[j], field_button_new_field[j + 1],
+                                field_button_new_field[j + 2])
+    new_game_call_back = types.InlineKeyboardButton(text="Выход", callback_data="exit")
+    game_menu_call_back.add(new_game_call_back)
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                          text='Игровое поле',
+                          reply_markup=game_menu_call_back)
 
-    def multi(lst):
-        return lst[0] * lst[1]
 
-    def divide(lst):
-        return lst[0] / lst[1]
-
-    def count_from_string(operation_in_calculation):
-        if "(" in operation_in_calculation:
-            bk1 = operation_in_calculation.rindex("(")
-            bk2 = operation_in_calculation.index(")", bk1)
-            print(bk1, bk2)
-            return count_from_string(
-                operation_in_calculation[:bk1] + str(
-                    count_from_string(operation_in_calculation[bk1 + 1:bk2])) + operation_in_calculation[bk2 + 1:])
-        if operation_in_calculation.isdigit():
-            return int(operation_in_calculation)
-        if "-" in operation_in_calculation:
-            return minus([count_from_string(item) for item in operation_in_calculation.split("-", 1)])
-        if "+" in operation_in_calculation:
-            return sum([count_from_string(item) for item in operation_in_calculation.split("+", 1)])
-        if "/" in operation_in_calculation:
-            return divide([count_from_string(item) for item in operation_in_calculation.split("/", 1)])
-        if "*" in operation_in_calculation:
-            return multi([count_from_string(item) for item in operation_in_calculation.split("*", 1)])
-
-    return count_from_string(operation)
+def is_win(arr, who):
+    if (((arr[0] == who) and (arr[4] == who) and (arr[8] == who)) or
+            ((arr[2] == who) and (arr[4] == who) and (arr[6] == who)) or
+            ((arr[0] == who) and (arr[1] == who) and (arr[2] == who)) or
+            ((arr[3] == who) and (arr[4] == who) and (arr[5] == who)) or
+            ((arr[6] == who) and (arr[7] == who) and (arr[8] == who)) or
+            ((arr[0] == who) and (arr[3] == who) and (arr[6] == who)) or
+            ((arr[1] == who) and (arr[4] == who) and (arr[7] == who)) or
+            ((arr[2] == who) and (arr[5] == who) and (arr[8] == who))):
+        return True
+    return False
 
 
 @bot.message_handler(commands=['start'])
@@ -166,6 +142,7 @@ def xo(msg: types.Message):
         but_8 = types.InlineKeyboardButton(text="8", callback_data="but8")
         but_9 = types.InlineKeyboardButton(text="9", callback_data="but9")
         but_0 = types.InlineKeyboardButton(text="0", callback_data="but0")
+        but_j = types.InlineKeyboardButton(text="j", callback_data="butj")
         but_plus = types.InlineKeyboardButton(text="+", callback_data="but+")
         but_minus = types.InlineKeyboardButton(text="-", callback_data="but-")
         but_multy = types.InlineKeyboardButton(text="*", callback_data="but*")
@@ -179,7 +156,7 @@ def xo(msg: types.Message):
         but_dot = types.InlineKeyboardButton(text=".", callback_data="but.")
         calc_keyboard.add(but_plus, but_minus, but_del)
         calc_keyboard.add(but_multy, but_divide, but_del_all)
-        calc_keyboard.add(but_l_s, but_r_s)
+        calc_keyboard.add(but_l_s, but_r_s, but_j)
         calc_keyboard.add(but_7, but_8, but_9)
         calc_keyboard.add(but_4, but_5, but_6)
         calc_keyboard.add(but_1, but_2, but_3)
@@ -187,31 +164,8 @@ def xo(msg: types.Message):
         calc_keyboard.add(but_close)
         bot.send_message(chat_id=msg.chat.id,
                          text="Вас приветствует справка по кальлкулятору\n"
-                              "\nДля запуска модуля вычислений введите 'calc' перед выражением\n"
-                              "Или воспользуйтесь встроенной клавиатурой^^", reply_markup=calc_keyboard)
+                              "Воспользуйтесь встроенной клавиатурой^^", reply_markup=calc_keyboard)
         keyboard_operation = ""
-    if 'calc' in msg.text.lower():
-        msg.text = msg.text.lower().replace(" ", "")
-        msg.text = msg.text.replace("calc", "calc ")
-        result = list(filter(lambda e: 'calc' not in e, msg.text.split()))
-        text = ""
-        for i in range(len(result)):
-            text += str(result[i])
-        if "i" not in text:
-            try:
-                res_of_calc = str(calc(text))
-                if "neg" in res_of_calc:
-                    numb = list(filter(lambda e: "neg" not in e, res_of_calc.split("_")))
-                    num = "-"
-                    for i in range(len(numb)):
-                        num += str(numb[i])
-                    res_of_calc = int(num)
-                bot.send_message(chat_id=msg.chat.id, text=f"Результат вычисления: {res_of_calc}")
-            except ValueError:
-                bot.send_message(chat_id=msg.chat.id, text=f"Выражение некорректо, я не могу его посчитать\n"
-                                                           f"Убедитесь, что в выражении нет ничего лишнего")
-        else:
-            bot.send_message(chat_id=msg.chat.id, text=f"Результат вычисления: {text}")
 
     global game_menu
     if msg.text == 'Крестики-Нолики':
@@ -293,6 +247,10 @@ def xo(msg: types.Message):
                 keyboard_operation += "1"
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
                                       text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+            if call.data == "butj":
+                keyboard_operation += "j"
+                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
             if call.data == "but2":
                 keyboard_operation += "2"
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
@@ -338,24 +296,11 @@ def xo(msg: types.Message):
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
                                       text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
             if call.data == "but=":
-                result_from_keyboard = str(calc(keyboard_operation))
-                if "neg" in result_from_keyboard:
-                    numb_calc = list(filter(lambda e: "neg" not in e, result_from_keyboard.split("_")))
-                    num_calc = "-"
-                    for p in range(len(numb_calc)):
-                        num_calc += str(numb_calc[p])
-                    try:
-                        result_from_keyboard = float(num_calc)
-                        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                              text=f"Ваш результат:{result_from_keyboard}")
-                    except ValueError:
-                        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                              text=f"Что-то пошло не так. "
-                                                   f"Перепроверьте выражение\n{keyboard_operation}",
-                                              reply_markup=calc_keyboard)
-                else:
+                try:
                     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                          text=f"Ваш результат:{result_from_keyboard}")
+                                          text=f"Ваш результат:{eval(keyboard_operation)}")
+                except SyntaxError:
+                    pass
             if call.data == "but*":
                 keyboard_operation += "*"
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
@@ -390,4 +335,4 @@ def xo(msg: types.Message):
                                       text="Заходи, если что)")
 
 
-bot.infinity_polling()
+bot.polling()
