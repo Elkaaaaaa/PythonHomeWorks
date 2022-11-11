@@ -6,6 +6,13 @@ with open("Bot Token.txt", "r", encoding="utf-8") as file:
     token = file.read()
 bot = TeleBot(f'{token}')
 
+
+def log(text):
+    with open("log.txt", "a", encoding="utf-8") as logfile:
+        print(datetime.now(), text, file=logfile)
+
+
+log("---> Бот запущен")
 main_menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
 key1 = types.KeyboardButton('Крестики-Нолики')
 key2 = types.KeyboardButton('Телефонный справочник')
@@ -129,6 +136,7 @@ def inline_key(msg):
 @bot.message_handler(content_types=['text'])
 def xo(msg: types.Message):
     if msg.text == 'Калькулятор':
+        log("--> Запуск калькулятора")
         global keyboard_operation
         global calc_keyboard
         calc_keyboard = types.InlineKeyboardMarkup(row_width=3)
@@ -169,6 +177,7 @@ def xo(msg: types.Message):
 
     global game_menu
     if msg.text == 'Крестики-Нолики':
+        log("--> Запуск игры 'Крестики-Нолики'")
         global count
         global field
         global field_button
@@ -189,8 +198,14 @@ def xo(msg: types.Message):
         global game_menu
         global count
         global keyboard_operation
+
+        def loger(text):
+            with open("log.txt", "a", encoding="utf-8") as logfile:
+                print(datetime.now(), text, file=logfile)
+
         if call.message:
             if call.data == "exit":
+                loger("->Досрочный вызод из игры")
                 for v in range(len(field)):
                     field[v] = f"{v + 1}"
                     count = 0
@@ -210,6 +225,7 @@ def xo(msg: types.Message):
                                                   text=f'ВЫ ВЫИГРАЛИ\n{field[0]} {field[1]} {field[2]}'
                                                        f'\n{field[3]} {field[4]} {field[5]}\n'
                                                        f'{field[6]} {field[7]} {field[8]}')
+                            loger("->Победа пользователя")
                             count = 0
                             for v in range(len(field)):
                                 field[v] = f"{v + 1}"
@@ -220,6 +236,7 @@ def xo(msg: types.Message):
                                                   text=f'Ничья!!!\n{field[0]} {field[1]} {field[2]}'
                                                        f'\n{field[3]} {field[4]} {field[5]}\n'
                                                        f'{field[6]} {field[7]} {field[8]}')
+                            loger("->Ничья")
                         else:
                             while True:
                                 c = random.randint(1, 10)
@@ -237,6 +254,7 @@ def xo(msg: types.Message):
                                                       text=f'Бот ВЫИГРАЛ\n{field[0]} {field[1]} {field[2]}'
                                                            f'\n{field[3]} {field[4]} {field[5]}\n'
                                                            f'{field[6]} {field[7]} {field[8]}')
+                                loger("->Победа бота")
                                 count = 0
                                 for v in range(len(field)):
                                     field[v] = f"{v + 1}"
@@ -299,8 +317,20 @@ def xo(msg: types.Message):
                 try:
                     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
                                           text=f"Ваш результат:{eval(keyboard_operation)}")
+                    loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
+                          f", Результат: {eval(keyboard_operation)}")
                 except SyntaxError:
-                    pass
+                    loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
+                          f", Некорректный ввод")
+                    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                          text=f"Перепроверьте строку "
+                                               f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+                except ValueError:
+                    loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
+                          f", Некорректный ввод")
+                    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                          text=f"Перепроверьте строку "
+                                               f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
             if call.data == "but*":
                 keyboard_operation += "*"
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
