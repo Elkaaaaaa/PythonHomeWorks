@@ -17,9 +17,11 @@ main_menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
 key1 = types.KeyboardButton('Крестики-Нолики')
 key2 = types.KeyboardButton('Телефонный справочник')
 key3 = types.KeyboardButton('Калькулятор')
+key4 = types.KeyboardButton('Log')
 main_menu.add(key1)
 # main_menu.add(key2)
 main_menu.add(key3)
+main_menu.add(key4)
 global count
 global game_menu
 global field
@@ -135,6 +137,11 @@ def inline_key(msg):
 
 @bot.message_handler(content_types=['text'])
 def xo(msg: types.Message):
+    if msg.text == 'Log':
+        with open("log.txt", "rb") as logfile:
+            read_file = logfile.read()
+        bot.send_message(chat_id=msg.chat.id, text="Log:")
+        bot.send_document(chat_id=msg.chat.id, document=read_file)
     if msg.text == 'Калькулятор':
         log("--> Запуск калькулятора")
         global keyboard_operation
