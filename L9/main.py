@@ -12,7 +12,7 @@ def log(text):
         print(datetime.now(), text, file=logfile)
 
 
-log("---> Бот запущен")
+log(f"---> Бот запущен")
 main_menu = types.ReplyKeyboardMarkup(resize_keyboard=True)
 key1 = types.KeyboardButton('Крестики-Нолики')
 key2 = types.KeyboardButton('Телефонный справочник')
@@ -200,176 +200,184 @@ def xo(msg: types.Message):
         game_menu.add(new_game)
         bot.send_message(chat_id=msg.chat.id, text='Добро пожаловть в игру\nКрестики-Нолики!', reply_markup=game_menu)
 
-    @bot.callback_query_handler(func=lambda call: True)
-    def callback(call):
-        global game_menu
-        global count
-        global keyboard_operation
 
-        def loger(text):
-            with open("log.txt", "a", encoding="utf-8") as logfile:
-                print(datetime.now(), text, file=logfile)
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    global game_menu
+    global count
+    global keyboard_operation
 
-        if call.message:
-            if call.data == "exit":
-                loger("->Досрочный вызод из игры")
-                for v in range(len(field)):
-                    field[v] = f"{v + 1}"
-                    count = 0
-                    field_button[v] = types.InlineKeyboardButton(text="⬜️", callback_data=f"{v + 1}")
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text='Возвращайся!')
-            if call.data.isdigit() and int(call.data) in range(len(field) + 1):
-                for k in range(len(field)):
-                    if call.data == f"{k + 1}" and call.data in field:
-                        field[k] = '❌'
-                        count += 1
-                        if is_win(field, "❌"):
+    def loger(text):
+        with open("log.txt", "a", encoding="utf-8") as filelog:
+            print(datetime.now(), text, file=filelog)
+
+    if call.message:
+        if call.data == "exit":
+            loger("->Досрочный выход из игры")
+            for v in range(len(field)):
+                field[v] = f"{v + 1}"
+                count = 0
+                field_button[v] = types.InlineKeyboardButton(text="⬜️", callback_data=f"{v + 1}")
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text='Возвращайся!')
+        if call.data.isdigit() and int(call.data) in range(len(field) + 1):
+            for k in range(len(field)):
+                if call.data == f"{k + 1}" and call.data in field:
+                    field[k] = '❌'
+                    count += 1
+                    if is_win(field, "❌"):
+                        for o in range(len(field)):
+                            if field[o].isdigit():
+                                field[o] = "⬜️"
+                        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                              text=f'ВЫ ВЫИГРАЛИ\n{field[0]} {field[1]} {field[2]}'
+                                                   f'\n{field[3]} {field[4]} {field[5]}\n'
+                                                   f'{field[6]} {field[7]} {field[8]}')
+                        loger("->Победа пользователя")
+                        count = 0
+                        for v in range(len(field)):
+                            field[v] = f"{v + 1}"
+                            field_button[v] = types.InlineKeyboardButton(text="⬜️", callback_data=f"{v + 1}")
+                        return
+                    elif count == 9:
+                        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                              text=f'Ничья!!!\n{field[0]} {field[1]} {field[2]}'
+                                                   f'\n{field[3]} {field[4]} {field[5]}\n'
+                                                   f'{field[6]} {field[7]} {field[8]}')
+                        loger("->Ничья")
+                    else:
+                        while True:
+                            c = random.randint(1, 10)
+                            if str(c) in field:
+                                field_button[c - 1] = types.InlineKeyboardButton(text="⭕️",
+                                                                                 callback_data=f"{c + 10}")
+                                field[c - 1] = '⭕️'
+                                count += 1
+                                break
+                        if is_win(field, '⭕️'):
                             for o in range(len(field)):
                                 if field[o].isdigit():
                                     field[o] = "⬜️"
                             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                                  text=f'ВЫ ВЫИГРАЛИ\n{field[0]} {field[1]} {field[2]}'
+                                                  text=f'Бот ВЫИГРАЛ\n{field[0]} {field[1]} {field[2]}'
                                                        f'\n{field[3]} {field[4]} {field[5]}\n'
                                                        f'{field[6]} {field[7]} {field[8]}')
-                            loger("->Победа пользователя")
+                            loger("->Победа бота")
                             count = 0
                             for v in range(len(field)):
                                 field[v] = f"{v + 1}"
                                 field_button[v] = types.InlineKeyboardButton(text="⬜️", callback_data=f"{v + 1}")
                             return
-                        elif count == 9:
-                            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                                  text=f'Ничья!!!\n{field[0]} {field[1]} {field[2]}'
-                                                       f'\n{field[3]} {field[4]} {field[5]}\n'
-                                                       f'{field[6]} {field[7]} {field[8]}')
-                            loger("->Ничья")
-                        else:
-                            while True:
-                                c = random.randint(1, 10)
-                                if str(c) in field:
-                                    field_button[c - 1] = types.InlineKeyboardButton(text="⭕️",
-                                                                                     callback_data=f"{c + 10}")
-                                    field[c - 1] = '⭕️'
-                                    count += 1
-                                    break
-                            if is_win(field, '⭕️'):
-                                for o in range(len(field)):
-                                    if field[o].isdigit():
-                                        field[o] = "⬜️"
-                                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                                      text=f'Бот ВЫИГРАЛ\n{field[0]} {field[1]} {field[2]}'
-                                                           f'\n{field[3]} {field[4]} {field[5]}\n'
-                                                           f'{field[6]} {field[7]} {field[8]}')
-                                loger("->Победа бота")
-                                count = 0
-                                for v in range(len(field)):
-                                    field[v] = f"{v + 1}"
-                                    field_button[v] = types.InlineKeyboardButton(text="⬜️", callback_data=f"{v + 1}")
-                                return
-                            new_field(field_button, k, call)
-            if call.data == "but1":
-                keyboard_operation += "1"
+                        new_field(field_button, k, call)
+        if call.data == "but1":
+            keyboard_operation += "1"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "butj":
+            keyboard_operation += "j"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but2":
+            keyboard_operation += "2"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but3":
+            keyboard_operation += "3"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but4":
+            keyboard_operation += "4"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but5":
+            keyboard_operation += "5"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but6":
+            keyboard_operation += "6"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but7":
+            keyboard_operation += "7"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but8":
+            keyboard_operation += "8"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but9":
+            keyboard_operation += "9"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but0":
+            keyboard_operation += "0"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but+":
+            keyboard_operation += "+"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but-":
+            keyboard_operation += "-"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but=":
+            try:
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "butj":
-                keyboard_operation += "j"
+                                      text=f"Ваш результат:{eval(keyboard_operation)}")
+                loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
+                      f", Результат: {eval(keyboard_operation)}")
+            except SyntaxError:
+                loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
+                      f", Некорректный ввод")
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but2":
-                keyboard_operation += "2"
+                                      text=f"Перепроверьте строку "
+                                           f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+            except ValueError:
+                loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
+                      f", Некорректный ввод")
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but3":
-                keyboard_operation += "3"
+                                      text=f"Перепроверьте строку "
+                                           f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+            except NameError:
+                loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
+                      f", Некорректный ввод")
                 bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but4":
-                keyboard_operation += "4"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but5":
-                keyboard_operation += "5"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but6":
-                keyboard_operation += "6"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but7":
-                keyboard_operation += "7"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but8":
-                keyboard_operation += "8"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but9":
-                keyboard_operation += "9"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but0":
-                keyboard_operation += "0"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but+":
-                keyboard_operation += "+"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but-":
-                keyboard_operation += "-"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but=":
-                try:
-                    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                          text=f"Ваш результат:{eval(keyboard_operation)}")
-                    loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
-                          f", Результат: {eval(keyboard_operation)}")
-                except SyntaxError:
-                    loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
-                          f", Некорректный ввод")
-                    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                          text=f"Перепроверьте строку "
-                                               f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-                except ValueError:
-                    loger(f"-> Пользователь ввел строку '{keyboard_operation}'"
-                          f", Некорректный ввод")
-                    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                          text=f"Перепроверьте строку "
-                                               f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but*":
-                keyboard_operation += "*"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but/":
-                keyboard_operation += "/"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but<":
-                keyboard_operation = keyboard_operation[:len(keyboard_operation) - 1]
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but(":
-                keyboard_operation += "("
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but)":
-                keyboard_operation += ")"
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "butC":
-                keyboard_operation = ""
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "but.":
-                keyboard_operation += "."
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
-            if call.data == "butClose":
-                keyboard_operation += "."
-                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
-                                      text="Заходи, если что)")
+                                      text=f"Перепроверьте строку\n"
+                                           f"Если у вас стоит просто 'j' замените на '1j'"
+                                           f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but*":
+            keyboard_operation += "*"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but/":
+            keyboard_operation += "/"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but<":
+            keyboard_operation = keyboard_operation[:len(keyboard_operation) - 1]
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but(":
+            keyboard_operation += "("
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but)":
+            keyboard_operation += ")"
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "butC":
+            keyboard_operation = ""
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "but.":
+            keyboard_operation += "."
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text=f">>>>>>>>>>>>>>>>>> {keyboard_operation}", reply_markup=calc_keyboard)
+        if call.data == "butClose":
+            keyboard_operation += "."
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id,
+                                  text="Заходи, если что)")
 
 
 bot.polling()
